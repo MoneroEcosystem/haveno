@@ -14,7 +14,7 @@ build:
     - ./gradlew :daemon-all shadowJar
   artifacts:
     paths:
-      - build/libs/
+      - daemon/build/libs/
     expire_in: 7 days
 
 release:
@@ -22,7 +22,7 @@ release:
   image: alpine:latest  # Use a minimal image for release preparation
   script:
     - mkdir -p release
-    - cp build/libs/*.jar release/
+    - cp daemon/build/libs/*.jar release/
     - echo "Release artifact generated."
   artifacts:
     paths:
