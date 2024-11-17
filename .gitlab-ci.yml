@@ -1,0 +1,68 @@
+stages:
+  - sync
+  - patch
+  - build
+  - release
+
+# Sync the upstream repository
+sync:
+  stage: sync
+  script:
+    - echo "Syncing upstream master branch..."
+    - git fetch origin master
+    - git reset --hard origin/master
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'  # Trigger on schedule or manual action
+
+# Apply patches
+patch:
+  stage: patch
+  script:
+    - echo "Switching to patched_master branch..."
+    - git fetch origin patched_master || true
+    - git checkout -b patched_master || git checkout patched_master
+    - echo "Merging upstream changes into patched_master..."
+    - git merge origin/master --no-ff -m "Merge upstream changes into patched_master"
+    - echo "Applying custom patches..."
+    - git fetch origin patched_changes
+    - git checkout patched_changes
+    - git merge patched_master --no-ff -m "Applying custom patches"
+    - echo "Updating patched_master with patched_changes..."
+    - git checkout patched_master
+    - git merge patched_changes --no-ff -m "Merged patches into patched_master"
+    - git push origin patched_master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "patched_changes"'  # Trigger when patched_changes updates
+    - if: '$CI_COMMIT_BRANCH == "master"'          # Trigger when master updates
+
+# Build process
+build:
+  stage: build
+  image: gradle:jdk21  # Use Gradle with Java 21
+  script:
+    - echo "Building with Gradle on Java 21..."
+    - java -version
+    - ./gradlew clean :daemon:shadowJar
+  artifacts:
+    paths:
+      - daemon/build/libs/  # Artifacts path
+    expire_in: 7 days       # Artifacts expiration time
+  rules:
+    - if: '$CI_COMMIT_TAG'                        # Trigger on new tag
+    - if: '$CI_COMMIT_BRANCH == "patched_master"' # Trigger when patched_master updates
+
+# Prepare release artifacts
+release:
+  stage: release
+  image: alpine:latest  # Minimal Docker image for release
+  script:
+    - echo "Preparing release artifacts..."
+    - mkdir -p release
+    - cp daemon/build/libs/*.jar release/
+    - echo "Release artifact generated."
+  artifacts:
+    paths:
+      - release/  # Path for release artifacts
+    expire_in: 7 days
+  rules:
+    - if: '$CI_COMMIT_TAG'  # Trigger only on new tags
