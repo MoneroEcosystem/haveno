@@ -788,8 +788,11 @@ configure(project(':statsnode')) {
 
 configure(project(':daemon')) {
     apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'application'
     
-    mainClassName = 'haveno.daemon.app.HavenoDaemonMain'
+    application {
+        mainClass = 'haveno.daemon.app.HavenoDaemonMain'
+    }
 
     dependencies {
         implementation project(':proto')
@@ -848,6 +851,7 @@ configure(project(':daemon')) {
         implementation "org.openjfx:javafx-graphics:$javafxVersion:$os"
     }
 }
+
 
 configure(project(':inventory')) {
     apply plugin: 'com.github.johnrengelman.shadow'
