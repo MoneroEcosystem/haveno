@@ -38,7 +38,7 @@ patch:
 # Build process
 build:
   stage: build
-  image: gradle:jdk21  # Use Gradle with Java 21
+  image: registry:java-core-builder:latest  # Use Gradle with Java 21
   script:
     - echo "Building with Gradle on Java 21..."
     - java -version
