@@ -17,9 +17,6 @@ update_patched_master:
         echo "patched_changes branch found. Proceeding...";
         git checkout patched_master || git checkout -b patched_master;
         git reset --hard origin/patched_changes;
-      else
-        echo "Error: patched_changes branch does not exist in the remote repository.";
-        exit 1;
       fi
     - echo "Force-pushing patched_master to match patched_changes..."
     - git push origin patched_master --force
