@@ -11,12 +11,13 @@ update_patched_master:
     - patched_changes
   script:
     - apk add --no-cache git
-    - echo "Cloning repository locally..."
+    - echo "Setting up Git repository locally..."
+    - git fetch --all
     - git clone ${CI_PROJECT_DIR} /tmp/repo
     - cd /tmp/repo
+    - echo "Fetching all branches..."
+    - git fetch origin
     - echo "Checking out patched_master branch..."
     - git checkout patched_master || git checkout -b patched_master
     - echo "Resetting patched_master to patched_changes..."
-    - git reset --hard origin/patched_changes
-    - echo "Pushing updated patched_master branch..."
-    - git push origin patched_master --force
+    - git reset --hard origin/HEAD
