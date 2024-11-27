@@ -7,11 +7,7 @@ update_patched_master:
     - patched_changes
   script:
     - apk --no-cache add git
-    - echo "Working in custom build directory..."
     - git fetch origin
-    - echo "Checking out patched_master branch..."
     - git checkout patched_master || git checkout -b patched_master
-    - echo "Resetting patched_master to patched_changes..."
     - git reset --hard origin/patched_changes
-    - echo "Force-pushing patched_master to match patched_changes..."
     - git push origin patched_master --force
