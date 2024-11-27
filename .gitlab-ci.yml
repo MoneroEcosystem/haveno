@@ -11,14 +11,6 @@ update_patched_master:
     - patched_changes
   script:
     - apk add --no-cache git
-stages:
-  - update_patched_master
-
-update_patched_master:
-  stage: update_patched_master
-  only:
-    - patched_changes
-  script:
     - echo "Cloning repository locally..."
     - git clone ${CI_PROJECT_DIR} /tmp/repo
     - cd /tmp/repo
