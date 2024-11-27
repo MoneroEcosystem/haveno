@@ -8,7 +8,7 @@ update_patched_master:
   script:
     - apk --no-cache add git
     - echo "Setting up Git repository locally..."
-    - git clone ${CI_REPOSITORY_URL} /tmp/repo
+    - git clone http://172.17.0.1:4411/haveno/haveno.git /tmp/repo
     - cd /tmp/repo
     - echo "Fetching all branches..."
     - git fetch origin
