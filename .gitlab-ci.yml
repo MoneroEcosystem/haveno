@@ -14,7 +14,7 @@ update_patched_master:
     - echo "Setting up Git..."
     - git config user.name "$GITLAB_USER_NAME"
     - git config user.email "$GITLAB_USER_EMAIL"
-    - git remote set-url origin https://oauth2:${GITLAB_ACCESS_TOKEN}@172.17.0.1:4411/${CI_PROJECT_PATH}.git
+    - git remote set-url origin http://oauth2:${GITLAB_ACCESS_TOKEN}@172.17.0.1:4411/${CI_PROJECT_PATH}.git
     - echo "Fetching all branches..."
     - git fetch --all
     - echo "Checking out patched_master..."
