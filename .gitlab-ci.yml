@@ -7,16 +7,11 @@ update_patched_master:
     - patched_changes
   script:
     - apk --no-cache add git
-    - echo "Setting up Git repository locally..."
-    - git clone http://oauth2:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git /tmp/repo
-    - cd /tmp/repo
-    - echo "Fetching all branches..."
+    - echo "Working in custom build directory..."
     - git fetch origin
-    - echo "Verifying if patched_changes exists..."
-    - if git show-ref --verify --quiet refs/remotes/origin/patched_changes; then
-        echo "patched_changes branch found. Proceeding...";
-        git checkout patched_master || git checkout -b patched_master;
-        git reset --hard origin/patched_changes;
-      fi
+    - echo "Checking out patched_master branch..."
+    - git checkout patched_master || git checkout -b patched_master
+    - echo "Resetting patched_master to patched_changes..."
+    - git reset --hard origin/patched_changes
     - echo "Force-pushing patched_master to match patched_changes..."
     - git push origin patched_master --force
