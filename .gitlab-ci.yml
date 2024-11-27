@@ -7,7 +7,13 @@ update_patched_master:
     - patched_changes
   script:
     - apk --no-cache add git
+    - echo "Setting up Git..."
+    - git remote set-url origin http://oauth2:${CI_JOB_TOKEN}@172.17.0.1:441/${CI_PROJECT_PATH}.git
+    - echo "Fetching origin..."
     - git fetch origin
+    - echo "Checking out patched_master..."
     - git checkout patched_master || git checkout -b patched_master
+    - echo "Resetting patched_master to patched_changes..."
     - git reset --hard origin/patched_changes
+    - echo "Force pushing patched_master..."
     - git push origin patched_master --force
