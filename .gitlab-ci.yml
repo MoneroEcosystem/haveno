@@ -1,24 +1,21 @@
 stages:
   - update_patched_master
 
-variables:
-  GIT_STRATEGY: fetch
-  GIT_SSL_NO_VERIFY: "1"
-
 update_patched_master:
   stage: update_patched_master
   only:
     - patched_changes
   script:
-    - apk add --no-cache git
     - echo "Setting up Git repository locally..."
-    - git clone ${CI_PROJECT_DIR} /tmp/repo
+    - git clone ${CI_REPOSITORY_URL} /tmp/repo
     - cd /tmp/repo
     - echo "Fetching all branches..."
     - git fetch origin
-    - echo "Checking out patched_master branch..."
-    - git checkout patched_master || git checkout -b patched_master
-    - echo "Resetting patched_master to patched_changes..."
-    - git reset --hard origin/patched_changes
+    - echo "Verifying if patched_changes exists..."
+    - if git show-ref --verify --quiet refs/remotes/origin/patched_changes; then
+        echo "patched_changes branch found. Proceeding...";
+        git checkout patched_master || git checkout -b patched_master;
+        git reset --hard origin/patched_changes;
+      fi
     - echo "Force-pushing patched_master to match patched_changes..."
     - git push origin patched_master --force
