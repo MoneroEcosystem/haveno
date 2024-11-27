@@ -6,6 +6,7 @@ update_patched_master:
   only:
     - patched_changes
   script:
+    - apk --no-cache add git
     - echo "Setting up Git repository locally..."
     - git clone ${CI_REPOSITORY_URL} /tmp/repo
     - cd /tmp/repo
