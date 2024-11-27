@@ -13,11 +13,12 @@ update_patched_master:
     - apk add --no-cache git
     - git config user.name "$GITLAB_USER_NAME"
     - git config user.email "$GITLAB_USER_EMAIL"
-    - git remote set-url origin http://oauth2:${GITLAB_ACCESS_TOKEN}@172.17.0.1:4411/${CI_PROJECT_PATH}.git
+    - echo "Setting remote URL with authentication..."
+    - git remote set-url origin http://oauth2:${CI_JOB_TOKEN}@172.17.0.1:4411/${CI_PROJECT_PATH}.git
     - echo "Fetching all branches..."
     - git fetch --all
     - echo "Resetting patched_master to patched_changes..."
-    - git checkout patched_master
+    - git checkout patched_master || git checkout -b patched_master
     - git reset --hard origin/patched_changes
     - echo "Force-pushing patched_master to match patched_changes..."
     - git push origin patched_master --force
