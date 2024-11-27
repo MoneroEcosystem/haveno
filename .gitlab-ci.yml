@@ -16,13 +16,8 @@ update_patched_master:
     - git remote set-url origin http://oauth2:${GITLAB_ACCESS_TOKEN}@172.17.0.1:4411/${CI_PROJECT_PATH}.git
     - echo "Fetching all branches..."
     - git fetch --all
-    - echo "Checking out patched_master..."
+    - echo "Resetting patched_master to patched_changes..."
     - git checkout patched_master
-    - echo "Merging master into patched_master, favoring patched_changes..."
-    - git merge -s recursive -X theirs origin/master
-    - echo "Cleaning up after merge..."
-    - git add .
-    - echo "Committing resolved merge..."
-    - git commit -m "Auto-resolve merge conflicts Favor patched_changes"
-    - echo "Pushing changes to patched_master..."
-    - git push origin patched_master
+    - git reset --hard origin/patched_changes
+    - echo "Force-pushing patched_master to match patched_changes..."
+    - git push origin patched_master --force
