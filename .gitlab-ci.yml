@@ -11,7 +11,6 @@ update_patched_master:
     - patched_changes
   script:
     - apk add --no-cache git
-    - echo "Setting up Git..."
     - git config user.name "$GITLAB_USER_NAME"
     - git config user.email "$GITLAB_USER_EMAIL"
     - git remote set-url origin http://oauth2:${GITLAB_ACCESS_TOKEN}@172.17.0.1:4411/${CI_PROJECT_PATH}.git
@@ -19,16 +18,11 @@ update_patched_master:
     - git fetch --all
     - echo "Checking out patched_master..."
     - git checkout patched_master
-    - echo "Merging master into patched_master..."
-    - git merge origin/master --no-edit
-    - echo "Cleaning working directory..."
-    - git rm -r --cached .
-    - git clean -fd
-    - echo "Overwriting all files from patched_changes (excluding .gitlab-ci.yml)..."
-    - git checkout origin/patched_changes -- . ':!.gitlab-ci.yml'
-    - echo "Adding changes..."
+    - echo "Merging master into patched_master, favoring patched_changes..."
+    - git merge -s recursive -X theirs origin/master
+    - echo "Cleaning up after merge..."
     - git add .
-    - echo "Committing changes..."
-    - git commit -m "Auto-update patched_master with changes from patched_changes"
+    - echo "Committing resolved merge..."
+    - git commit -m "Auto-resolve merge conflicts: Favor patched_changes"
     - echo "Pushing changes to patched_master..."
     - git push origin patched_master
