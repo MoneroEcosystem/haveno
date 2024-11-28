@@ -10,12 +10,25 @@ update_patched_master:
   script:
     - apk --no-cache add git
     - echo "Setting up Git..."
-    - git remote set-url origin http://oauth2:glpat-T3idX9vsETxBWayx8m3E@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
-    - echo "Fetching origin..."
-    - git fetch origin
+    - git config user.name "$GITLAB_USER_NAME"
+    - git config user.email "$GITLAB_USER_EMAIL"
+    - git remote set-url origin https://oauth2:${GITLAB_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
+    - echo "Fetching all branches..."
+    - git fetch --all
     - echo "Checking out patched_master..."
-    - git checkout patched_master || git checkout -b patched_master
-    - echo "Resetting patched_master to patched_changes..."
-    - git reset --hard origin/patched_changes
-    - echo "Force pushing patched_master..."
-    - git push origin patched_master --force
+    - git checkout patched_master
+    - echo "Merging master into patched_master..."
+    - git merge origin/master --no-edit
+    - echo "Cleaning working directory..."
+    - git rm -r --cached .  # Remove all files from the staging area
+    - git clean -fd  # Remove untracked files and directories
+    - echo "Overwriting all files from patched_changes..."
+    - git checkout origin/patched_changes -- .  # Checkout files from patched_changes
+    - echo "Removing files not in patched_changes..."
+    - git ls-files -z | xargs -0 git rm -f  # Delete any files that aren't in patched_changes
+    - echo "Adding changes..."
+    - git add .  # Add all changes (the overwritten files)
+    - echo "Committing changes..."
+    - git commit -m "Auto-update patched_master with changes from patched_changes"
+    - echo "Pushing changes to patched_master..."
+    - git push origin patched_master
