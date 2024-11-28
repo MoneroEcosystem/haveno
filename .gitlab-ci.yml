@@ -3,6 +3,8 @@ stages:
 
 update_patched_master:
   stage: update_patched_master
+  tags:
+    - instance
   only:
     - patched_changes
   script:
