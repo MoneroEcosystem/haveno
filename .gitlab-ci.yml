@@ -10,7 +10,7 @@ update_patched_master:
   script:
     - apk --no-cache add git
     - echo "Setting up Git..."
-    - git remote set-url origin http://oauth2:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
+    - git remote set-url origin http://oauth2:glpat-T3idX9vsETxBWayx8m3E@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
     - echo "Fetching origin..."
     - git fetch origin
     - echo "Checking out patched_master..."
