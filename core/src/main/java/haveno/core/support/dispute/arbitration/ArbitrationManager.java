@@ -200,7 +200,7 @@ public final class ArbitrationManager extends DisputeManager<ArbitrationDisputeL
     @Override
     protected String getDisputeInfo(Dispute dispute) {
         String role = Res.get("shared.arbitrator").toLowerCase();
-        String link = "https://docs.haveno.exchange/trading-rules.html#legacy-arbitration";
+        String link = "https://haveno.com/trading-rules";
         return Res.get("support.initialInfo", role, role, link);
     }
 
