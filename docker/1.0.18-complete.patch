@@ -1,0 +1,794 @@
+diff --git a/README.md b/README.md
+index 5c439f9a..e69de29b 100644
+--- a/README.md
++++ b/README.md
+@@ -1,81 +0,0 @@
+-<div align="center">
+-  <img src="https://raw.githubusercontent.com/haveno-dex/haveno-meta/721e52919b28b44d12b6e1e5dac57265f1c05cda/logo/haveno_logo_landscape.svg" alt="Haveno logo">
+-
+-  ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/haveno-dex/haveno/build.yml?branch=master)
+-  [![GitHub issues with bounty](https://img.shields.io/github/issues-search/haveno-dex/haveno?color=%23fef2c0&label=Issues%20with%20bounties&query=is%3Aopen+is%3Aissue+label%3A%F0%9F%92%B0bounty)](https://github.com/haveno-dex/haveno/issues?q=is%3Aopen+is%3Aissue+label%3A%F0%9F%92%B0bounty)
+-  [![Twitter Follow](https://img.shields.io/twitter/follow/HavenoDEX?style=social)](https://twitter.com/havenodex)
+-  [![Matrix rooms](https://img.shields.io/badge/Matrix%20room-%23haveno-blue)](https://matrix.to/#/#haveno:monero.social) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://github.com/haveno-dex/.github/blob/master/CODE_OF_CONDUCT.md)
+-</div>
+-
+-## What is Haveno?
+-
+-Haveno (pronounced ha‧ve‧no) is an open source platform to exchange [Monero](https://getmonero.org) for fiat currencies like USD, EUR, and GBP or other cryptocurrencies like BTC, ETH, and BCH.
+-
+-Main features:
+-
+-- Communications are routed through **Tor**, to preserve your privacy.
+-
+-- Trades are **peer-to-peer**: trades on Haveno happen between people only, there is no central authority.
+-
+-- Trades are **non-custodial**: Haveno supports arbitration in case something goes wrong during the trade, but arbitrators never have access to your funds.
+-
+-- There is **No token**, because it's not needed. Transactions between traders are secured by non-custodial multisignature transactions on the Monero network.
+-
+-See the [FAQ on our website](https://haveno.exchange/faq/) for more information.
+-
+-## Installing Haveno
+-
+-Haveno can be installed on Linux, macOS, and Windows by using a third party installer and network.
+-
+-> [!note]
+-> The official Haveno repository does not support making real trades directly.
+-> 
+-> To make real trades with Haveno, first find a third party network, and then use their installer or build their repository. We do not endorse any networks at this time.
+-
+-A test network is also available for users to make test trades using Monero's stagenet. See the [instructions](https://github.com/haveno-dex/haveno/blob/master/docs/installing.md) to build Haveno and connect to the test network.
+-
+-Alternatively, you can [create your own mainnet network](create-mainnet.md).
+-
+-Note that Haveno is being actively developed. If you find issues or bugs, please let us know.
+-
+-## Main repositories
+-
+-- **[haveno](https://github.com/haveno-dex/haveno)** - This repository. The core of Haveno.
+-- **[haveno-ts](https://github.com/haveno-dex/haveno-ts)** - TypeScript library for using Haveno.
+-- **[haveno-ui](https://github.com/haveno-dex/haveno-ui)** - A new user interface (WIP).
+-- **[haveno-meta](https://github.com/haveno-dex/haveno-meta)** - For project-wide discussions and proposals.
+-
+-If you wish to help, take a look at the repositories above and look for open issues. We run a bounty program to incentivize development. See [Bounties](#bounties).
+-
+-## Keep in touch and help out!
+-
+-Haveno is a community-driven project. For it to be successful it's fundamental to have the support and help of the community. Join the community rooms on our Matrix server:
+-
+-- General discussions: **Haveno** ([#haveno:monero.social](https://matrix.to/#/#haveno:monero.social)) relayed on IRC/Libera (`#haveno`)
+-- Development discussions: **Haveno Development** ([#haveno-development:monero.social](https://matrix.to/#/#haveno-development:monero.social)) relayed on IRC/Libera (`#haveno-development`)
+-
+-Email: contact@haveno.exchange
+-Website: [haveno.exchange](https://haveno.exchange)
+-
+-## Contributing to Haveno
+-
+-See the [developer guide](docs/developer-guide.md) to get started developing for Haveno.
+-
+-See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for our styling guides.
+-
+-If you are not able to contribute code and want to contribute development resources, [donations](#support) fund development bounties.
+-
+-## Bounties
+-
+-To incentivize development and reward contributors, we adopt a simple bounty system. Contributors may be awarded bounties after completing a task (resolving an issue). Take a look at the [issues labeled '💰bounty'](https://github.com/haveno-dex/haveno/issues?q=is%3Aopen+is%3Aissue+label%3A%F0%9F%92%B0bounty) in the main `haveno` repository. [Details and conditions for receiving a bounty](docs/bounties.md).
+-
+-## Support and sponsorships
+-
+-To bring Haveno to life, we need resources. If you have the possibility, please consider [becoming a sponsor](https://haveno.exchange/sponsors/) or donating to the project:
+-
+-<p>
+-  <img src="https://raw.githubusercontent.com/haveno-dex/haveno/master/media/donate_monero.png" alt="Donate Monero" width="115" height="115"><br>
+-  <code>42sjokkT9FmiWPqVzrWPFE5NCJXwt96bkBozHf4vgLR9hXyJDqKHEHKVscAARuD7in5wV1meEcSTJTanCTDzidTe2cFXS1F</code>
+-</p>
+-
+-If you are using a wallet that supports OpenAlias (like the 'official' CLI and GUI wallets), you can simply put `fund@haveno.exchange` as the "receiver" address.
+diff --git a/build.gradle b/build.gradle
+index c8a80a90..e9f54053 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -787,6 +787,8 @@ configure(project(':statsnode')) {
+ }
+ 
+ configure(project(':daemon')) {
++    apply plugin: 'com.github.johnrengelman.shadow'
++    
+     mainClassName = 'haveno.daemon.app.HavenoDaemonMain'
+ 
+     dependencies {
+diff --git a/common/src/main/java/haveno/common/app/Version.java b/common/src/main/java/haveno/common/app/Version.java
+index d39016dc..37158383 100644
+--- a/common/src/main/java/haveno/common/app/Version.java
++++ b/common/src/main/java/haveno/common/app/Version.java
+@@ -80,7 +80,7 @@ public class Version {
+ 
+     // The version no. for the objects sent over the network. A change will break the serialization of old objects.
+     // If objects are used for both network and database the network version is applied.
+-    public static final String P2P_NETWORK_VERSION = "A";
++    public static final String P2P_NETWORK_VERSION = System.getenv().getOrDefault("P2P_NETWORK_VERSION", "X");;
+ 
+     // The version no. of the serialized data stored to disc. A change will break the serialization of old objects.
+     // VERSION = 0.5.0 -> LOCAL_DB_VERSION = 1
+diff --git a/core/src/main/java/haveno/core/alert/AlertManager.java b/core/src/main/java/haveno/core/alert/AlertManager.java
+index a54f45c4..372641ad 100644
+--- a/core/src/main/java/haveno/core/alert/AlertManager.java
++++ b/core/src/main/java/haveno/core/alert/AlertManager.java
+@@ -101,15 +101,12 @@ public class AlertManager {
+         switch (Config.baseCurrencyNetwork()) {
+         case XMR_LOCAL:
+             return List.of(
+-                    "027a381b5333a56e1cc3d90d3a7d07f26509adf7029ed06fc997c656621f8da1ee",
+-                    "024baabdba90e7cc0dc4626ef73ea9d722ea7085d1104491da8c76f28187513492");
++                    "0326b14f3a55d02575dceed5202b8b125f458cbe0fdceeee294b443bf1a8d8cf78");
+         case XMR_STAGENET:
+             return List.of(
+-                    "036d8a1dfcb406886037d2381da006358722823e1940acc2598c844bbc0fd1026f",
+-                    "026c581ad773d987e6bd10785ac7f7e0e64864aedeb8bce5af37046de812a37854",
+-                    "025b058c9f2c60d839669dbfa5578cf5a8117d60e6b70e2f0946f8a691273c6a36");
++                    "0326b14f3a55d02575dceed5202b8b125f458cbe0fdceeee294b443bf1a8d8cf78");
+         case XMR_MAINNET:
+-            return List.of();
++            return List.of("0326b14f3a55d02575dceed5202b8b125f458cbe0fdceeee294b443bf1a8d8cf78");
+         default:
+             throw new RuntimeException("Unhandled base currency network: " + Config.baseCurrencyNetwork());
+         }
+diff --git a/core/src/main/java/haveno/core/alert/PrivateNotificationManager.java b/core/src/main/java/haveno/core/alert/PrivateNotificationManager.java
+index fd6abac5..bd93565c 100644
+--- a/core/src/main/java/haveno/core/alert/PrivateNotificationManager.java
++++ b/core/src/main/java/haveno/core/alert/PrivateNotificationManager.java
+@@ -99,16 +99,11 @@ public class PrivateNotificationManager implements MessageListener {
+         if (useDevPrivilegeKeys) return List.of(DevEnv.DEV_PRIVILEGE_PUB_KEY);
+         switch (Config.baseCurrencyNetwork()) {
+         case XMR_LOCAL:
+-            return List.of(
+-                    "027a381b5333a56e1cc3d90d3a7d07f26509adf7029ed06fc997c656621f8da1ee",
+-                    "024baabdba90e7cc0dc4626ef73ea9d722ea7085d1104491da8c76f28187513492");
++            return List.of("023c8fdea9ff2d03daef54337907e70a7b0e20084a75fcc3ad2f0c28d8b691dea1");
+         case XMR_STAGENET:
+-            return List.of(
+-                    "02ba7c5de295adfe57b60029f3637a2c6b1d0e969a8aaefb9e0ddc3a7963f26925",
+-                    "026c581ad773d987e6bd10785ac7f7e0e64864aedeb8bce5af37046de812a37854",
+-                    "025b058c9f2c60d839669dbfa5578cf5a8117d60e6b70e2f0946f8a691273c6a36");
++            return List.of("023c8fdea9ff2d03daef54337907e70a7b0e20084a75fcc3ad2f0c28d8b691dea1");
+         case XMR_MAINNET:
+-            return List.of();
++            return List.of("023c8fdea9ff2d03daef54337907e70a7b0e20084a75fcc3ad2f0c28d8b691dea1");
+         default:
+             throw new RuntimeException("Unhandled base currency network: " + Config.baseCurrencyNetwork());
+         }
+diff --git a/core/src/main/java/haveno/core/app/HavenoExecutable.java b/core/src/main/java/haveno/core/app/HavenoExecutable.java
+index 5f2d1462..a665b03e 100644
+--- a/core/src/main/java/haveno/core/app/HavenoExecutable.java
++++ b/core/src/main/java/haveno/core/app/HavenoExecutable.java
+@@ -84,7 +84,7 @@ public abstract class HavenoExecutable implements GracefulShutDownHandler, Haven
+ 
+     // TODO: regular expression is used to parse application name for the flatpak manifest, a more stable approach would be nice
+     // Don't edit the next line unless you're only editing in between the quotes.
+-    public static final String DEFAULT_APP_NAME = "Haveno";
++    public static final String DEFAULT_APP_NAME = "Haveno App";
+ 
+     public static final int EXIT_SUCCESS = 0;
+     public static final int EXIT_FAILURE = 1;
+diff --git a/core/src/main/java/haveno/core/filter/FilterManager.java b/core/src/main/java/haveno/core/filter/FilterManager.java
+index cb7e0e9b..a92caf52 100644
+--- a/core/src/main/java/haveno/core/filter/FilterManager.java
++++ b/core/src/main/java/haveno/core/filter/FilterManager.java
+@@ -116,9 +116,7 @@ public class FilterManager {
+ 
+         publicKeys = useDevPrivilegeKeys ?
+                 Collections.singletonList(DevEnv.DEV_PRIVILEGE_PUB_KEY) :
+-                List.of("0358d47858acdc41910325fce266571540681ef83a0d6fedce312bef9810793a27",
+-                        "029340c3e7d4bb0f9e651b5f590b434fecb6175aeaa57145c7804ff05d210e534f",
+-                        "034dc7530bf66ffd9580aa98031ea9a18ac2d269f7c56c0e71eca06105b9ed69f9");
++                List.of("03d62d14438adbe7aea688ade1f73933c6f0a705f238c02c5b54b83dd1e4fca225");
+ 
+         banFilter.setBannedNodePredicate(this::isNodeAddressBannedFromNetwork);
+     }
+diff --git a/core/src/main/java/haveno/core/support/dispute/arbitration/ArbitrationManager.java b/core/src/main/java/haveno/core/support/dispute/arbitration/ArbitrationManager.java
+index 50be387c..406e8986 100644
+--- a/core/src/main/java/haveno/core/support/dispute/arbitration/ArbitrationManager.java
++++ b/core/src/main/java/haveno/core/support/dispute/arbitration/ArbitrationManager.java
+@@ -200,7 +200,7 @@ public final class ArbitrationManager extends DisputeManager<ArbitrationDisputeL
+     @Override
+     protected String getDisputeInfo(Dispute dispute) {
+         String role = Res.get("shared.arbitrator").toLowerCase();
+-        String link = "https://docs.haveno.exchange/trading-rules.html#legacy-arbitration";
++        String link = "https://haveno.com/trading-rules";
+         return Res.get("support.initialInfo", role, role, link);
+     }
+ 
+diff --git a/core/src/main/java/haveno/core/support/dispute/arbitration/arbitrator/ArbitratorManager.java b/core/src/main/java/haveno/core/support/dispute/arbitration/arbitrator/ArbitratorManager.java
+index 30fe0be1..179c256d 100644
+--- a/core/src/main/java/haveno/core/support/dispute/arbitration/arbitrator/ArbitratorManager.java
++++ b/core/src/main/java/haveno/core/support/dispute/arbitration/arbitrator/ArbitratorManager.java
+@@ -62,23 +62,14 @@ public class ArbitratorManager extends DisputeAgentManager<Arbitrator> {
+         switch (Config.baseCurrencyNetwork()) {
+         case XMR_LOCAL:
+             return List.of(
+-                    "027a381b5333a56e1cc3d90d3a7d07f26509adf7029ed06fc997c656621f8da1ee",
+-                    "024baabdba90e7cc0dc4626ef73ea9d722ea7085d1104491da8c76f28187513492",
+-                    "026eeec3c119dd6d537249d74e5752a642dd2c3cc5b6a9b44588eb58344f29b519");
++                    "0326b14f3a55d02575dceed5202b8b125f458cbe0fdceeee294b443bf1a8d8cf78");
+         case XMR_STAGENET:
+             return List.of(
+-                    "03bb559ce207a4deb51d4c705076c95b85ad8581d35936b2a422dcb504eaf7cdb0",
+-                    "026c581ad773d987e6bd10785ac7f7e0e64864aedeb8bce5af37046de812a37854",
+-                    "025b058c9f2c60d839669dbfa5578cf5a8117d60e6b70e2f0946f8a691273c6a36",
+-                    "036c7d3f4bf05ef39b9d1b0a5d453a18210de36220c3d83cd16e59bd6132b037ad",
+-                    "030f7122a10ff73cd73808bddace95be77a94189c8a0eb24586265e125ce5ce6b9",
+-                    "03aa23e062afa0dda465f46986f8aa8d0374ad3e3f256141b05681dcb1e39c3859",
+-                    "02d3beb1293ca2ca14e6d42ca8bd18089a62aac62fd6bb23923ee6ead46ac60fba",
+-                    "03fa0f38f27bdd324db6f933f7e57851dadf3b911e4db6b19dd0950492c4525a31",
+-                    "02a1a458df5acf4ab08fdca748e28f33a955a30854c8c1a831ee733dca7f0d2fcd",
+-                    "0374dd70f3fa6e47ec5ab97932e1cec6233e98e6ae3129036b17118650c44fd3de");
++                    "0326b14f3a55d02575dceed5202b8b125f458cbe0fdceeee294b443bf1a8d8cf78");
+         case XMR_MAINNET:
+-            return List.of();
++            return List.of(
++                "0326b14f3a55d02575dceed5202b8b125f458cbe0fdceeee294b443bf1a8d8cf78"
++            );
+         default:
+             throw new RuntimeException("Unhandled base currency network: " + Config.baseCurrencyNetwork());
+         }
+diff --git a/core/src/main/java/haveno/core/trade/HavenoUtils.java b/core/src/main/java/haveno/core/trade/HavenoUtils.java
+index d238d788..2a4f9159 100644
+--- a/core/src/main/java/haveno/core/trade/HavenoUtils.java
++++ b/core/src/main/java/haveno/core/trade/HavenoUtils.java
+@@ -85,17 +85,17 @@ import org.bitcoinj.core.Coin;
+ public class HavenoUtils {
+ 
+     // configure release date
+-    private static final String RELEASE_DATE = "25-05-2024 00:00:00"; // optionally set to release date of the network in format dd-mm-yyyy to impose temporary limits, etc. e.g. "25-05-2024 00:00:00"
++    private static final String RELEASE_DATE = "25-11-2024 00:00:00"; // optionally set to release date of the network in format dd-mm-yyyy to impose temporary limits, etc. e.g. "25-05-2024 00:00:00"
+     public static final int RELEASE_LIMIT_DAYS = 60; // number of days to limit sell offers to max buy limit for new accounts
+     public static final int WARN_ON_OFFER_EXCEEDS_UNSIGNED_BUY_LIMIT_DAYS = 182; // number of days to warn if sell offer exceeds unsigned buy limit
+     public static final int ARBITRATOR_ACK_TIMEOUT_SECONDS = 60;
+ 
+     // configure fees
+-    public static final boolean ARBITRATOR_ASSIGNS_TRADE_FEE_ADDRESS = true;
+-    public static final double PENALTY_FEE_PCT = 0.02; // 2%
++    public static final boolean ARBITRATOR_ASSIGNS_TRADE_FEE_ADDRESS = false;
+     public static final double MAKER_FEE_PCT = 0.0015; // 0.15%
+-    public static final double TAKER_FEE_PCT = 0.0075; // 0.75%
+-    public static final double MAKER_FEE_FOR_TAKER_WITHOUT_DEPOSIT_PCT = MAKER_FEE_PCT + TAKER_FEE_PCT; // customize maker's fee when no deposit or fee from taker
++    public static final double TAKER_FEE_PCT = 0.0015; // 0.15%
++    public static final double PENALTY_FEE_PCT = 0.02; // 2%
++    public static final double MAKER_FEE_FOR_TAKER_WITHOUT_DEPOSIT_PCT = MAKER_FEE_PCT + TAKER_FEE_PCT; 
+ 
+     // other configuration
+     public static final long LOG_POLL_ERROR_PERIOD_MS = 1000 * 60 * 4; // log poll errors up to once every 4 minutes
+@@ -464,7 +464,7 @@ public class HavenoUtils {
+         case XMR_STAGENET:
+             return "5B11hTJdG2XDNwjdKGLRxwSLwDhkbGg7C7UEAZBxjE6FbCeRMjudrpNACmDNtWPiSnNfjDQf39QRjdtdgoL69txv81qc2Mc";
+         case XMR_MAINNET:
+-            throw new RuntimeException("Mainnet fee address not implemented");
++            return "84R8DfswAtT5eZ97ioKFjJYvd6HKuSdZTKyZYYJr77oVWcAiJDJgTAc3piVm2prKmeAgf92iSr7jkcjmmHNFLWGEDGUDafc";
+         default:
+             throw new RuntimeException("Unhandled base currency network: " + Config.baseCurrencyNetwork());
+         }
+diff --git a/core/src/main/resources/xmr_mainnet.seednodes b/core/src/main/resources/xmr_mainnet.seednodes
+index 3f81fa04..aacaca7e 100644
+--- a/core/src/main/resources/xmr_mainnet.seednodes
++++ b/core/src/main/resources/xmr_mainnet.seednodes
+@@ -1,2 +1,4 @@
+ # nodeaddress.onion:port [(@owner,@backup)]
+-placeholder.onion:8000 (@placeholder)
+\ No newline at end of file
++5i6blbmuflq4s4im6zby26a7g22oef6kyp7vbwyru6oq5e36akzo3ayd.onion:2001 (@xox)
++dx4ktxyiemjc354imehuaswbhqlidhy62b4ifzigk5p2rb37lxqbveqd.onion:2002 (@xox)
++ajbqx4clnjlr7lmzoftuvpvmqafdiilidsgocvokx6bqj3okk56ccfqd.onion:2003 (@xox)
+\ No newline at end of file
+diff --git a/desktop/package/package.gradle b/desktop/package/package.gradle
+index 65e09d55..de2c99e7 100644
+--- a/desktop/package/package.gradle
++++ b/desktop/package/package.gradle
+@@ -278,7 +278,7 @@ task packageInstallers {
+                         " --java-options --add-opens=java.base/java.lang.reflect=ALL-UNNAMED" +
+                         " --java-options --add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED" +
+                         " --java-options -Djava.net.preferIPv4Stack=true" +
+-                        " --arguments --baseCurrencyNetwork=XMR_STAGENET"
++                        " --arguments --baseCurrencyNetwork=XMR_MAINNET"
+                 // Warning: this will cause guice reflection exceptions and lead to issues with the guice internal cache
+                 // resulting in the UI not loading
+ //              " --java-options -Djdk.module.illegalAccess=deny" +
+diff --git a/docker/Dockerfile.core b/docker/Dockerfile.core
+new file mode 100755
+index 00000000..bee1bb1c
+--- /dev/null
++++ b/docker/Dockerfile.core
+@@ -0,0 +1,38 @@
++FROM openjdk:21-jdk-bullseye
++
++RUN set -ex && \
++    apt update && \
++    apt --no-install-recommends --yes install \
++        make \
++        git \
++        tor
++
++RUN set -ex && adduser --system --group --disabled-password haveno && \
++    mkdir -p /home/haveno && \
++    chown -R haveno:haveno /home/haveno
++
++USER haveno
++
++WORKDIR /home/haveno
++
++RUN echo 'Cache3'
++
++RUN set -ex && git clone https://git.haveno.com/haveno/haveno.git
++
++WORKDIR /home/haveno/haveno
++
++COPY 1.0.18-complete.patch /home/haveno/haveno/1.0.18-complete.patch
++
++RUN git checkout tags/1.0.18 && \
++    git reset --hard 1.0.18 && \
++    git apply 1.0.18-complete.patch
++
++
++RUN make clean && make skip-tests
++
++WORKDIR /home/haveno/haveno
++
++ENTRYPOINT [ "./haveno-seednode" ]
++
++## CMDs are conditional based on type
++CMD ["--baseCurrencyNetwork=XMR_MAINNET", "--useLocalhostForP2P=false", "--useDevPrivilegeKeys=false", "--nodePort=2002"]
+diff --git a/docker/build_then_publish_all.sh b/docker/build_then_publish_all.sh
+new file mode 100644
+index 00000000..e69de29b
+diff --git a/docker/config/nodes/haveno_seednode_2001/hostname b/docker/config/nodes/haveno_seednode_2001/hostname
+new file mode 100755
+index 00000000..fff219c8
+--- /dev/null
++++ b/docker/config/nodes/haveno_seednode_2001/hostname
+@@ -0,0 +1 @@
++5i6blbmuflq4s4im6zby26a7g22oef6kyp7vbwyru6oq5e36akzo3ayd.onion
+diff --git a/docker/config/nodes/haveno_seednode_2001/hs_ed25519_public_key b/docker/config/nodes/haveno_seednode_2001/hs_ed25519_public_key
+new file mode 100755
+index 0000000000000000000000000000000000000000..622eb855ac4d65892c59e70d03cfcf70f17d038a
+GIT binary patch
+literal 64
+zcmV-G0Kfk|Js@RdGBq_ZId(BEaCKsAX=6Gdba`-PFd#iW0002$JQanMD&fg-4E95f
+Wcpo;j;up%p|4`czr=1Ryegd+wXBcMy
+
+literal 0
+HcmV?d00001
+
+diff --git a/docker/config/nodes/haveno_seednode_2001/hs_ed25519_secret_key b/docker/config/nodes/haveno_seednode_2001/hs_ed25519_secret_key
+new file mode 100755
+index 0000000000000000000000000000000000000000..4a8ce9291914a3a540e054fd5342da9fd9c15e22
+GIT binary patch
+literal 96
+zcmV-m0H6OoJs@RdGBq_ZId(BEb7f<4Wpp|qba`-PFd#iW00013!WD+FnYMllinWAq
+zy2eLprwa_T^V|X&>cLb4=a5rWmwhR<H|x+FoGEiMQxd<lT?(CZzfc47AF0kp03~{<
+C2qpdi
+
+literal 0
+HcmV?d00001
+
+diff --git a/docker/config/nodes/haveno_seednode_2002/hostname b/docker/config/nodes/haveno_seednode_2002/hostname
+new file mode 100755
+index 00000000..a5736901
+--- /dev/null
++++ b/docker/config/nodes/haveno_seednode_2002/hostname
+@@ -0,0 +1 @@
++dx4ktxyiemjc354imehuaswbhqlidhy62b4ifzigk5p2rb37lxqbveqd.onion
+diff --git a/docker/config/nodes/haveno_seednode_2002/hs_ed25519_public_key b/docker/config/nodes/haveno_seednode_2002/hs_ed25519_public_key
+new file mode 100755
+index 0000000000000000000000000000000000000000..801ac20974a58f89b11e5ca68df91b70d86becb1
+GIT binary patch
+literal 64
+zcmcDuRY*-SGBq`{EHl(CC{4=AOtw-esVqn}P_VUSU|^8_vGP8LvXJigjzoS3uY)#X
+Ujq~L$R5U$h3y)vXULX4a0E)vF$^ZZW
+
+literal 0
+HcmV?d00001
+
+diff --git a/docker/config/nodes/haveno_seednode_2002/hs_ed25519_secret_key b/docker/config/nodes/haveno_seednode_2002/hs_ed25519_secret_key
+new file mode 100755
+index 0000000000000000000000000000000000000000..3107f1ec27730c0e806ab2c22bc0c8ddf65ebf38
+GIT binary patch
+literal 96
+zcmV-m0H6OoJs@RdGBq_ZId(BEb7f<4Wpp|qba`-PFd#iW0000uv)etQDb&?HuP{X~
+zbkyPo;EE!pyo;cWy_VedoQGN<_U1s1gB9wYiUy7nmlhkJ({%iUCVfLJXSZxn(eB&+
+C04eeS
+
+literal 0
+HcmV?d00001
+
+diff --git a/docker/config/nodes/haveno_seednode_2003/hostname b/docker/config/nodes/haveno_seednode_2003/hostname
+new file mode 100755
+index 00000000..f8fd832f
+--- /dev/null
++++ b/docker/config/nodes/haveno_seednode_2003/hostname
+@@ -0,0 +1 @@
++ajbqx4clnjlr7lmzoftuvpvmqafdiilidsgocvokx6bqj3okk56ccfqd.onion
+diff --git a/docker/config/nodes/haveno_seednode_2003/hs_ed25519_public_key b/docker/config/nodes/haveno_seednode_2003/hs_ed25519_public_key
+new file mode 100755
+index 0000000000000000000000000000000000000000..586d11a8ef09c4aa50bade99df6f3f217df075a5
+GIT binary patch
+literal 64
+zcmcDuRY*-SGBq`{EHl(CC{4=AOtw-esVqn}P_VUSU|?W!=KkQF6)wMaW?{P5zBLV8
+UCW;v{Jr6@q?Qdpzdn&vJ0DMIjp8x;=
+
+literal 0
+HcmV?d00001
+
+diff --git a/docker/config/nodes/haveno_seednode_2003/hs_ed25519_secret_key b/docker/config/nodes/haveno_seednode_2003/hs_ed25519_secret_key
+new file mode 100755
+index 0000000000000000000000000000000000000000..aa4f748b65565c58c36b3e606b9f1db82271f3a8
+GIT binary patch
+literal 96
+zcmV-m0H6OoJs@RdGBq_ZId(BEb7f<4Wpp|qba`-PFd#iW0002Ugd#yf$;w;w**@aw
+zg?e)FdO}bGx?%VVd3}Px^e{<wB9>tvz;;=Ce#wvslSlv-mEknEcz;Ww;o^ptRg>1`
+CBPja-
+
+literal 0
+HcmV?d00001
+
+diff --git a/docker/daemon/.env b/docker/daemon/.env
+new file mode 100644
+index 00000000..931de414
+--- /dev/null
++++ b/docker/daemon/.env
+@@ -0,0 +1,3 @@
++NETWORK_VERSION_TAG=1.0.18
++BASE_NETWORK=STAGENET
++P2P_NETWORK_VERSION="X"
+\ No newline at end of file
+diff --git a/docker/daemon/docker-compose.yml b/docker/daemon/docker-compose.yml
+new file mode 100644
+index 00000000..72a17d33
+--- /dev/null
++++ b/docker/daemon/docker-compose.yml
+@@ -0,0 +1,28 @@
++version: '3'
++
++services:
++  haveno-daemon:
++    image: haveno-core
++    build:
++      context: ../
++    ports:
++      - "127.0.0.1:3201:3201"
++    environment:
++      - P2P_NETWORK_VERSION=X
++      - NETWORK_VERSION_TAG=${NETWORK_VERSION_TAG}
++      - BASE_CURRENCY_NETWORK=XMR_${BASE_NETWORK}
++      - USE_LOCALHOST_FOR_P2P=false
++      - USE_DEV_PRIVILEGE_KEYS=false
++      - NODE_PORT=9999
++      - APP_NAME=haveno-XMR_${BASE_NETWORK}_DAEMON
++      - EXPORT_SHADOW=yes
++      - EXPORT_SHADOW_PATH=daemon/build/libs/daemon-all.sh # Leave this blank in most cases
++    entrypoint: ["./haveno-daemon"]
++    command:
++      - "--baseCurrencyNetwork=XMR_${BASE_NETWORK}"
++      - "--useLocalhostForP2P=false"
++      - "--useDevPrivilegeKeys=false"
++      - "--nodePort=9999"
++      - "--appName=XMR_${BASE_NETWORK}_DAEMON"
++      - "--seedNodes=5i6blbmuflq4s4im6zby26a7g22oef6kyp7vbwyru6oq5e36akzo3ayd.onion:2001,dx4ktxyiemjc354imehuaswbhqlidhy62b4ifzigk5p2rb37lxqbveqd.onion:2002,ajbqx4clnjlr7lmzoftuvpvmqafdiilidsgocvokx6bqj3okk56ccfqd.onion:2003"
++    restart: unless-stopped
+diff --git a/docker/initial_setup.sh b/docker/initial_setup.sh
+new file mode 100644
+index 00000000..2241009b
+--- /dev/null
++++ b/docker/initial_setup.sh
+@@ -0,0 +1,13 @@
++## check if sudo frst other wise exist
++
++## setup docker
++apt-get update -y
++apt-get install docker.io docker-compose tor make -y
++
++cp torrc /etc/tor/torrc
++cp -r config/nodes/* /var/lib/tor/
++
++## build base files
++cd .. && make skip-tests
++
++cd docker/seednode && docker compose up --build 
+diff --git a/docker/seednode/.env b/docker/seednode/.env
+new file mode 100644
+index 00000000..586a660c
+--- /dev/null
++++ b/docker/seednode/.env
+@@ -0,0 +1,2 @@
++BASE_NETWORK=STAGENET
++P2P_NETWORK_VERSION="X"
+\ No newline at end of file
+diff --git a/docker/seednode/docker-compose.yml b/docker/seednode/docker-compose.yml
+new file mode 100644
+index 00000000..0da5abb7
+--- /dev/null
++++ b/docker/seednode/docker-compose.yml
+@@ -0,0 +1,79 @@
++version: '3.8'
++
++services:
++  haveno-core:
++    image: haveno-core
++    build:
++      context: ../
++      dockerfile: Dockerfile.core
++    # No ports, this one just builds the image
++    entrypoint: ["true"]  # No need to run
++
++  haveno-seednode_2001:
++    image: haveno-core
++    depends_on:
++      - haveno-core
++    ports:
++      - "127.0.0.1:2001:2001"
++    environment:
++      - BASE_CURRENCY_NETWORK=XMR_${BASE_NETWORK}
++      - USE_LOCALHOST_FOR_P2P=false
++      - USE_DEV_PRIVILEGE_KEYS=false
++      - NODE_PORT=2001
++      - APP_NAME=haveno-XMR_${BASE_NETWORK}_Seed_2001
++    entrypoint: ["./haveno-seednode"]
++    command:
++      - "--baseCurrencyNetwork=XMR_${BASE_NETWORK}"
++      - "--useLocalhostForP2P=false"
++      - "--useDevPrivilegeKeys=false"
++      - "--nodePort=2001"
++      - "--appName=haveno-XMR_${BASE_NETWORK}_Seed_2001"
++      - "--hiddenServiceAddress=5i6blbmuflq4s4im6zby26a7g22oef6kyp7vbwyru6oq5e36akzo3ayd.onion"
++      - "--seedNodes=5i6blbmuflq4s4im6zby26a7g22oef6kyp7vbwyru6oq5e36akzo3ayd.onion:2001,dx4ktxyiemjc354imehuaswbhqlidhy62b4ifzigk5p2rb37lxqbveqd.onion:2002,ajbqx4clnjlr7lmzoftuvpvmqafdiilidsgocvokx6bqj3okk56ccfqd.onion:2003"
++    restart: unless-stopped
++
++  haveno-seednode_2002:
++    image: haveno-core
++    depends_on:
++      - haveno-core
++    ports:
++      - "127.0.0.1:2002:2002"
++    environment:
++      - BASE_CURRENCY_NETWORK=XMR_${BASE_NETWORK}
++      - USE_LOCALHOST_FOR_P2P=false
++      - USE_DEV_PRIVILEGE_KEYS=false
++      - NODE_PORT=2002
++      - APP_NAME=haveno-XMR_${BASE_NETWORK}_Seed_2002
++    entrypoint: ["./haveno-seednode"]
++    command:
++      - "--baseCurrencyNetwork=XMR_${BASE_NETWORK}"
++      - "--useLocalhostForP2P=false"
++      - "--useDevPrivilegeKeys=false"
++      - "--nodePort=2002"
++      - "--appName=haveno-XMR_${BASE_NETWORK}_Seed_2002"
++      - "--hiddenServiceAddress=dx4ktxyiemjc354imehuaswbhqlidhy62b4ifzigk5p2rb37lxqbveqd.onion"
++      - "--seedNodes=5i6blbmuflq4s4im6zby26a7g22oef6kyp7vbwyru6oq5e36akzo3ayd.onion:2001,dx4ktxyiemjc354imehuaswbhqlidhy62b4ifzigk5p2rb37lxqbveqd.onion:2002,ajbqx4clnjlr7lmzoftuvpvmqafdiilidsgocvokx6bqj3okk56ccfqd.onion:2003"
++    restart: unless-stopped
++
++  haveno-seednode_2003:
++    image: haveno-core
++    depends_on:
++      - haveno-core
++    ports:
++      - "127.0.0.1:2003:2003"
++    environment:
++      - BASE_CURRENCY_NETWORK=XMR_${BASE_NETWORK}
++      - USE_LOCALHOST_FOR_P2P=false
++      - USE_DEV_PRIVILEGE_KEYS=false
++      - NODE_PORT=2003
++      - APP_NAME=haveno-XMR_${BASE_NETWORK}_Seed_2003
++    entrypoint: ["./haveno-seednode"]
++    command:
++      - "--baseCurrencyNetwork=XMR_${BASE_NETWORK}"
++      - "--useLocalhostForP2P=false"
++      - "--useDevPrivilegeKeys=false"
++      - "--nodePort=2003"
++      - "--appName=haveno-XMR_${BASE_NETWORK}_Seed_2003"
++      - "--hiddenServiceAddress=ajbqx4clnjlr7lmzoftuvpvmqafdiilidsgocvokx6bqj3okk56ccfqd.onion"
++      - "--seedNodes=5i6blbmuflq4s4im6zby26a7g22oef6kyp7vbwyru6oq5e36akzo3ayd.onion:2001,dx4ktxyiemjc354imehuaswbhqlidhy62b4ifzigk5p2rb37lxqbveqd.onion:2002,ajbqx4clnjlr7lmzoftuvpvmqafdiilidsgocvokx6bqj3okk56ccfqd.onion:2003"
++    restart: unless-stopped
+\ No newline at end of file
+diff --git a/docker/statsnode/.env b/docker/statsnode/.env
+new file mode 100644
+index 00000000..586a660c
+--- /dev/null
++++ b/docker/statsnode/.env
+@@ -0,0 +1,2 @@
++BASE_NETWORK=STAGENET
++P2P_NETWORK_VERSION="X"
+\ No newline at end of file
+diff --git a/docker/statsnode/docker-compose.yml b/docker/statsnode/docker-compose.yml
+new file mode 100644
+index 00000000..5dfa7e8a
+--- /dev/null
++++ b/docker/statsnode/docker-compose.yml
+@@ -0,0 +1,15 @@
++version: '3'
++
++services:
++  haveno-statsnode:
++    image: haveno-core
++    build:
++      context: ../
++      dockerfile: Dockerfile.core
++    entrypoint: ["./haveno-statsnode"]
++    evironment:
++      - P2P_NETWORK_VERSION=X
++    command:
++      - "--baseCurrencyNetwork=XMR_${BASE_NETWORK}"
++      - "--appName=XMR_${BASE_NETWORK}_STATSNODE"
++      - "--seedNodes=5i6blbmuflq4s4im6zby26a7g22oef6kyp7vbwyru6oq5e36akzo3ayd.onion:2001,dx4ktxyiemjc354imehuaswbhqlidhy62b4ifzigk5p2rb37lxqbveqd.onion:2002,ajbqx4clnjlr7lmzoftuvpvmqafdiilidsgocvokx6bqj3okk56ccfqd.onion:2003"
+diff --git a/docker/torrc b/docker/torrc
+new file mode 100755
+index 00000000..8ddaf97e
+--- /dev/null
++++ b/docker/torrc
+@@ -0,0 +1,109 @@
++## Configuration file for Haveno Seednode
++##
++## Tor opens a socks proxy on port 9050 by default -- even if you don't
++## configure one below. Set "SocksPort 0" if you plan to run Tor only
++## as a relay, and not make any local application connections yourself.
++#SocksPort 9050 # Default: Bind to localhost:9050 for local connections.
++# ### SocksPort flag: OnionTrafficOnly ###
++## Tell the tor client to only connect to .onion addresses in response to SOCKS5 requests on this connection.
++## This is equivalent to NoDNSRequest, NoIPv4Traffic, NoIPv6Traffic.
++# ### SocksPort flag: ExtendedErrors ###
++## Return extended error code in the SOCKS reply. So far, the possible errors are:
++# X'F0' Onion Service Descriptor Can Not be Found
++# X'F1' Onion Service Descriptor Is Invalid
++# X'F2' Onion Service Introduction Failed
++# X'F3' Onion Service Rendezvous Failed
++# X'F4' Onion Service Missing Client Authorization
++# X'F5' Onion Service Wrong Client Authorization
++# X'F6' Onion Service Invalid Address
++# X'F7' Onion Service Introduction Timed Out
++SocksPort 9050 OnionTrafficOnly ExtendedErrors
++ 
++## Entry policies to allow/deny SOCKS requests based on IP address.
++## First entry that matches wins. If no SocksPolicy is set, we accept
++## all (and only) requests that reach a SocksPort. Untrusted users who
++## can access your SocksPort may be able to learn about the connections
++## you make.
++SocksPolicy accept 127.0.0.1
++SocksPolicy accept6 [::1]
++SocksPolicy reject *
++ 
++## Tor will reject application connections that use unsafe variants of the socks protocol
++## — ones that only provide an IP address, meaning the application is doing a DNS resolve first.
++## Specifically, these are socks4 and socks5 when not doing remote DNS. (Default: 0)
++#SafeSocks 1
++ 
++## Tor will make a notice-level log entry for each connection to the Socks port indicating
++## whether the request used a safe socks protocol or an unsafe one (see above entry on SafeSocks).
++## This helps to determine whether an application using Tor is possibly leaking DNS requests. (Default: 0)
++TestSocks 1
++ 
++## Logs go to stdout at level "notice" unless redirected by something
++## else, like one of the below lines. You can have as many Log lines as
++## you want.
++##
++## We advise using "notice" in most cases, since anything more verbose
++## may provide sensitive information to an attacker who obtains the logs.
++##
++## Send all messages of level 'notice' or higher to /var/log/tor/notices.log
++#Log notice file /var/log/tor/notices.log
++## Send every possible message to /var/log/tor/debug.log
++#Log debug file /var/log/tor/debug.log
++## Use the system log instead of Tor's logfiles (This is default)
++#Log notice syslog
++## To send all messages to stderr:
++#Log debug stderr
++ 
++# Try to write to disk less frequently than we would otherwise. This is useful when running on flash memory.
++AvoidDiskWrites 1
++ 
++HiddenServiceStatistics 0
++ 
++## Compute the hash of a password with "tor --hash-password password".
++HashedControlPassword 16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C
++#CookieAuthentication 0       # (Default: 1)
++ 
++## MetricsPort provides an interface to the underlying Tor relay metrics.
++## Exposing publicly is dangerous, set a very strict access policy.
++## Retrieve the metrics with:  curl http://127.0.0.1:9035/metrics
++MetricsPort 127.0.0.1:9035
++MetricsPortPolicy accept 127.0.0.1
++MetricsPortPolicy accept [::1]
++ 
++HiddenServiceDir /var/lib/tor/haveno_seednode_2001
++HiddenServicePort 2001 127.0.0.1:2001
++HiddenServicePort 2001 [::1]:2001
++HiddenServiceEnableIntroDoSDefense 1
++HiddenServicePoWDefensesEnabled 1
++HiddenServicePoWQueueRate 50          # (Default: 250)
++HiddenServicePoWQueueBurst 250        # (Default: 2500)
++HiddenServiceMaxStreams 25
++ 
++ 
++HiddenServiceDir /var/lib/tor/haveno_seednode_2002
++HiddenServicePort 2002 127.0.0.1:2002
++HiddenServicePort 2002 [::1]:2002
++HiddenServiceEnableIntroDoSDefense 1
++#HiddenServiceEnableIntroDoSRatePerSec 25       # (Default: 25)
++#HiddenServiceEnableIntroDoSBurstPerSec 200     # (Default: 200)
++HiddenServicePoWDefensesEnabled 1
++HiddenServicePoWQueueRate 50          # (Default: 250)
++HiddenServicePoWQueueBurst 250        # (Default: 2500)
++HiddenServiceMaxStreams 25
++#HiddenServiceMaxStreamsCloseCircuit 1
++ 
++ 
++HiddenServiceDir /var/lib/tor/haveno_seednode_2003
++HiddenServicePort 2003 127.0.0.1:2003
++HiddenServicePort 2003 [::1]:2003
++HiddenServiceEnableIntroDoSDefense 1
++#HiddenServiceEnableIntroDoSRatePerSec 25       # (Default: 25)
++#HiddenServiceEnableIntroDoSBurstPerSec 200     # (Default: 200)
++#HiddenServiceNumIntroductionPoints 3           # (Default: 3)
++HiddenServicePoWDefensesEnabled 1
++HiddenServicePoWQueueRate 50          # (Default: 250)
++HiddenServicePoWQueueBurst 250        # (Default: 2500)
++HiddenServiceMaxStreams 25
++#HiddenServiceMaxStreamsCloseCircuit 1
++ 
++LongLivedPorts 2001,2002,2003
+\ No newline at end of file
+diff --git a/gpg_keys/woodser.asc b/gpg_keys/woodser.asc
+deleted file mode 100644
+index 2dcc3f3a..00000000
+--- a/gpg_keys/woodser.asc
++++ /dev/null
+@@ -1,53 +0,0 @@
+------BEGIN PGP PUBLIC KEY BLOCK-----
+-Comment: GPGTools - https://gpgtools.org
+-
+-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
+-mqKdaDoa
+-=bRX1
+------END PGP PUBLIC KEY BLOCK-----
