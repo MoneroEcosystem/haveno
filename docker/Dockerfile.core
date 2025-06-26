@@ -17,15 +17,14 @@ WORKDIR /home/haveno
 
 RUN set -ex && git clone https://foss.haveno.com/haveno-network/haveno-core.git
 
-WORKDIR /home/haveno/haveno
+WORKDIR /home/haveno/haveno-core
 
 RUN git checkout master && \
     git reset --hard
 
-
 RUN make clean && make skip-tests
 
-WORKDIR /home/haveno/haveno
+WORKDIR /home/haveno/haveno-core
 
 ENTRYPOINT [ "./haveno-seednode" ]
 
