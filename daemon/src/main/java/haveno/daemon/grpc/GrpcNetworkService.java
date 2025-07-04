@@ -2,15 +2,12 @@ package haveno.daemon.grpc;
 
 import com.google.inject.Inject;
 import com.google.protobuf.ByteString;
-
-import io.grpc.Context;
 import io.grpc.ServerInterceptor;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
 import haveno.core.api.CoreApi;
 import haveno.core.api.NetworkListener;
-import haveno.core.filter.Filter;
 import haveno.core.filter.PaymentAccountFilter;
 import haveno.daemon.grpc.interceptor.CallRateMeteringInterceptor;
 import haveno.daemon.grpc.interceptor.GrpcCallRateMeter;
@@ -18,32 +15,20 @@ import haveno.daemon.grpc.interceptor.GrpcCallRateMeter;
 import static haveno.daemon.grpc.interceptor.GrpcServiceRateMeteringConfig.getCustomRateMeteringInterceptor;
 import haveno.proto.grpc.NetworkMessage;
 import static haveno.proto.grpc.NetworkGrpc.getRegisterNetworkListenerMethod;
-import static haveno.proto.grpc.NetworkGrpc.getGetSeednodesMethod;
-import static haveno.proto.grpc.NetworkGrpc.getGetOnlinePeersMethod;
-import static haveno.proto.grpc.NetworkGrpc.getGetRegisteredArbitratorsMethod;
-import haveno.proto.grpc.GetRegisteredArbitratorsReply;
-import haveno.proto.grpc.GetRegisteredArbitratorsRequest;
 import haveno.proto.grpc.GetOnlinePeersRequest;
 import haveno.proto.grpc.GetSeednodesReply;
 import haveno.proto.grpc.GetOnlinePeersReply;
 import haveno.proto.grpc.GetSeednodesRequest;
 import haveno.network.p2p.peers.peerexchange.Peer;
 import haveno.proto.grpc.NetworkGrpc.NetworkImplBase;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.ArrayList;
-
-import haveno.core.support.dispute.arbitration.arbitrator.Arbitrator;
 import haveno.proto.grpc.GetNetworkFilterReply;
 import haveno.proto.grpc.GetNetworkFilterRequest;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import protobuf.StoragePayload;
 
 @Slf4j
 class GrpcNetworkService extends NetworkImplBase {
