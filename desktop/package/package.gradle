@@ -195,7 +195,6 @@ task packageInstallers {
     dependsOn 'retrieveAndExtractJavaBinaries'
     // Clean all previous artifacts and create a fresh shadowJar for the installers
     dependsOn rootProject.clean
-    dependsOn ':core'
     dependsOn ':desktop:shadowJar'
 
     doLast {
