@@ -24,7 +24,6 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import haveno.common.app.DevEnv;
 import haveno.common.config.Config;
 import haveno.common.crypto.KeyRing;
 import haveno.common.crypto.PubKeyRing;
@@ -63,7 +62,6 @@ public class PrivateNotificationManager implements MessageListener {
     private final MailboxMessageService mailboxMessageService;
     private final KeyRing keyRing;
     private final ObjectProperty<PrivateNotificationPayload> privateNotificationMessageProperty = new SimpleObjectProperty<>();
-    private final boolean useDevPrivilegeKeys;
 
     private ECKey privateNotificationSigningKey;
     @Nullable

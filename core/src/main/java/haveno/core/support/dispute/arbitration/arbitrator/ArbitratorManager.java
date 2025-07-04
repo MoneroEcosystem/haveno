@@ -36,7 +36,6 @@ package haveno.core.support.dispute.arbitration.arbitrator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import haveno.common.config.Config;
 import haveno.common.crypto.KeyRing;
 import haveno.core.filter.FilterManager;
 import haveno.core.support.dispute.agent.DisputeAgentManager;

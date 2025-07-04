@@ -52,6 +52,7 @@ public abstract class DisputeSession extends SupportSession {
         return dispute != null ? dispute.getTradeId() : "";
     }
 
+    @SuppressWarnings("null")
     @Override
     public int getClientId() {
         // Get pubKeyRing of trader. Arbitrator is considered server for the chat session

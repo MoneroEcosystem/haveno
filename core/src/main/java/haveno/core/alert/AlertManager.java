@@ -20,7 +20,6 @@ package haveno.core.alert;
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import haveno.common.app.DevEnv;
 import haveno.common.config.Config;
 import haveno.common.crypto.KeyRing;
 import haveno.core.user.User;
