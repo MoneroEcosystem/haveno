@@ -8,8 +8,6 @@ import haveno.network.p2p.peers.peerexchange.Peer;
 import haveno.core.filter.Filter;
 import haveno.core.filter.FilterManager;
 import haveno.network.p2p.peers.PeerManager;
-
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Singleton
