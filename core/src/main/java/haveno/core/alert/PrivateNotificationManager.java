@@ -85,7 +85,6 @@ public class PrivateNotificationManager implements MessageListener {
         this.networkNode = networkNode;
         this.mailboxMessageService = mailboxMessageService;
         this.keyRing = keyRing;
-        this.useDevPrivilegeKeys = useDevPrivilegeKeys;
 
         if (!ignoreDevMsg) {
             this.p2PService.addDecryptedDirectMessageListener(this::handleMessage);
@@ -190,11 +189,12 @@ public class PrivateNotificationManager implements MessageListener {
         SettableFuture<Connection> future = networkNode.sendMessage(peersNodeAddress, ping);
         Futures.addCallback(future, new FutureCallback<>() {
             @Override
-            public void onSuccess(Connection connection) {
+            public void onSuccess(@SuppressWarnings("null") Connection connection) {
                 connection.addMessageListener(PrivateNotificationManager.this);
                 pingResponseHandler = resultHandler;
             }
 
+            @SuppressWarnings("null")
             @Override
             public void onFailure(@NotNull Throwable throwable) {
                 String errorMessage = "Sending ping to " + peersNodeAddress.getAddressForDisplay() +
