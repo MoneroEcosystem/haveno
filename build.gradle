@@ -453,6 +453,123 @@ configure(project(':core')) {
         mainClass = 'haveno.core.util.GenerateKeyPairs'
         classpath = sourceSets.main.runtimeClasspath
     }
+
+    task havenoDeps {
+        doLast {
+            // get monero binaries download url
+            Map moneroBinaries = [
+                'linux-x86_64'         : 'https://github.com/haveno-dex/monero/releases/download/release6/monero-bins-haveno-linux-x86_64.tar.gz',
+                'linux-x86_64-sha256'  : '44470a3cf2dd9be7f3371a8cc89a34cf9a7e88c442739d87ef9a0ec3ccb65208',
+                'linux-aarch64'        : 'https://github.com/haveno-dex/monero/releases/download/release6/monero-bins-haveno-linux-aarch64.tar.gz',
+                'linux-aarch64-sha256' : 'c9505524689b0d7a020b8d2fd449c3cb9f8fd546747f9bdcf36cac795179f71c',
+                'mac'                  : 'https://github.com/haveno-dex/monero/releases/download/release6/monero-bins-haveno-mac.tar.gz',
+                'mac-sha256'           : 'dea6eddefa09630cfff7504609bd5d7981316336c64e5458e242440694187df8',
+                'windows'              : 'https://github.com/haveno-dex/monero/releases/download/release6/monero-bins-haveno-windows.zip',
+                'windows-sha256'       : '284820e28c4770d7065fad7863e66fe0058053ca2372b78345d83c222edc572d'
+            ]
+
+            String osKey
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                osKey = 'windows'
+            } else if (Os.isFamily(Os.FAMILY_MAC)) {
+                osKey = 'mac'
+            } else {
+                String architecture = System.getProperty("os.arch").toLowerCase()
+                if (architecture.contains('aarch64') || architecture.contains('arm')) {
+                    osKey = 'linux-aarch64'
+                } else {
+                    osKey = 'linux-x86_64'
+                }
+            }
+
+            String moneroDownloadUrl = moneroBinaries[osKey]
+            String moneroSHA256Hash = moneroBinaries[osKey + '-sha256']
+            String moneroArchiveFileName = moneroDownloadUrl.tokenize('/').last()
+            String localnetDirName = '.localnet'
+            File localnetDir = new File(project.rootDir, localnetDirName)
+            localnetDir.mkdirs()
+            File moneroArchiveFile = new File(localnetDir, moneroArchiveFileName)
+            ext.downloadAndVerifyDependencies(moneroDownloadUrl, moneroSHA256Hash, moneroArchiveFile)
+
+            // extract if dependencies are missing or if archive was updated
+            File monerodFile
+            File moneroRpcFile
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                monerodFile = new File(localnetDir, 'monerod.exe')
+                moneroRpcFile = new File(localnetDir, 'monero-wallet-rpc.exe')
+            } else {
+                monerodFile = new File(localnetDir, 'monerod')
+                moneroRpcFile = new File(localnetDir, 'monero-wallet-rpc')
+            }
+            if (ext.dependencyDownloadedAndVerified || !monerodFile.exists() || !moneroRpcFile.exists()) {
+                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    ext.extractArchiveZip(moneroArchiveFile, localnetDir)
+                } else {
+                    ext.extractArchiveTarGz(moneroArchiveFile, localnetDir)
+                }
+            }
+
+            // add the current platform's monero dependencies into the resources folder for installation
+            copy {
+                from "${monerodFile}"
+                into "${project(':core').projectDir}/src/main/resources/bin"
+            }
+            copy {
+                from "${moneroRpcFile}"
+                into "${project(':core').projectDir}/src/main/resources/bin"
+            }
+        }
+
+        ext.extractArchiveTarGz = { File tarGzFile, File destinationDir ->
+            println "Extracting tar.gz ${tarGzFile}"
+            // Gradle's tar extraction preserves permissions (crucial for jpackage to function correctly)
+            copy {
+                from tarTree(resources.gzip(tarGzFile))
+                into destinationDir
+            }
+            println "Extracted to ${destinationDir}"
+        }
+
+        ext.extractArchiveZip = { File zipFile, File destinationDir ->
+            println "Extracting zip ${zipFile}..."
+            ant.unzip(src: zipFile, dest: destinationDir)
+            println "Extracted to ${destinationDir}"
+        }
+
+        ext.downloadAndVerifyDependencies = { String archiveURL, String archiveSHA256, File destinationArchiveFile ->
+            ext.dependencyDownloadedAndVerified = false
+
+            // if archive exists, check to see if its already up to date
+            if (destinationArchiveFile.exists()) {
+                println "Verifying existing archive ${destinationArchiveFile}"
+                ant.archiveHash = archiveSHA256
+                ant.checksum(file: destinationArchiveFile, algorithm: 'SHA-256', property: '${archiveHash}', verifyProperty: 'existingHashMatches')
+                if (ant.properties['existingHashMatches'] != 'true') {
+                    println "Existing archive does not match hash ${archiveSHA256}"
+                } else {
+                    println "Existing archive matches hash"
+                    return
+                }
+            }
+
+            // download archives
+            println "Downloading ${archiveURL}"
+            ant.get(src: archiveURL, dest: destinationArchiveFile)
+            println 'Download saved to ' + destinationArchiveFile
+
+            // verify checksum
+            println 'Verifying checksum for downloaded binary ...'
+            ant.archiveHash = archiveSHA256
+            ant.checksum(file: destinationArchiveFile, algorithm: 'SHA-256', property: '${archiveHash}', verifyProperty: 'downloadedHashMatches') // use a different verifyProperty name from existing verification or it will always fail
+            if (ant.properties['downloadedHashMatches'] != 'true') {
+                ant.fail('Checksum mismatch: Downloaded archive has a different checksum than expected')
+            }
+            println 'Checksum verified'
+            ext.dependencyDownloadedAndVerified = true
+        }
+    }
+
+    processResources.dependsOn havenoDeps // before both test and build
 }
 
 configure(project(':cli')) {
