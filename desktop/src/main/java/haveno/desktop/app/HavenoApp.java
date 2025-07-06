@@ -166,7 +166,7 @@ public class HavenoApp extends Application implements UncaughtExceptionHandler {
             if (scene == null) {
                 log.warn("Scene not available yet, we create a new scene. The bug might be caused by an exception in a constructor or by a circular dependency in Guice. throwable=" + throwable.toString());
                 scene = new Scene(new StackPane(), 1000, 650);
-                CssTheme.loadSceneStyles(scene, CssTheme.CSS_THEME_LIGHT, false);
+                CssTheme.loadSceneStyles(scene, CssTheme.CSS_THEME_DARK, false);
                 stage.setScene(scene);
                 stage.show();
             }

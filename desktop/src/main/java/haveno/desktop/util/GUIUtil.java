@@ -827,7 +827,7 @@ public class GUIUtil {
     public static boolean canCreateOrTakeOfferOrShowPopup(User user, Navigation navigation) {
 
         if (!user.hasAcceptedArbitrators()) {
-            log.warn("There are no arbitrators available");
+            log.warn("There are no arbitrators available, this probably means your client is outdated and you need to visit https://haveno.com to download a newer version.");
             new Popup().warning(Res.get("popup.warning.noArbitratorsAvailable")).show();
             return false;
         }
