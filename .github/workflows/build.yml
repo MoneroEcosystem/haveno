@@ -170,4 +170,3 @@ jobs:
 # git tag -d 1.0.19-1       - delete local tag
 #
 # git ls-remote --tags      - lists all remote tags
-# git push origin --delete refs/tags/1.0.19-1      - delete remote tag
