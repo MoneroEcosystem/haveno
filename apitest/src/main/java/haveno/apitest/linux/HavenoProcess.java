@@ -51,7 +51,7 @@ public class HavenoProcess extends AbstractLinuxProcess implements LinuxProcess 
     public HavenoProcess(HavenoAppConfig havenoAppConfig, ApiTestConfig config) {
         super(havenoAppConfig.appName, config);
         this.havenoAppConfig = havenoAppConfig;
-        this.baseCurrencyNetwork = "XMR_STAGENET";
+        this.baseCurrencyNetwork = "XMR_MAINNET";
         this.genesisTxId = "30af0050040befd8af25068cc697e418e09c2d8ebd8d411d2240591b9ec203cf";
         this.genesisBlockHeight = 111;
         this.seedNodes = "localhost:2002";
