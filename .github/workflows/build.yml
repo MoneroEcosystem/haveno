@@ -168,4 +168,3 @@ jobs:
 #
 # git tag                   - lists all local tags
 # git tag -d 1.0.19-1       - delete local tag
-#
