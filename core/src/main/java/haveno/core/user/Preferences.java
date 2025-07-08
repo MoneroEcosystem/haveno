@@ -79,7 +79,7 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
     }
 
     private static final ArrayList<BlockChainExplorer> XMR_MAIN_NET_EXPLORERS = new ArrayList<>(Arrays.asList(
-            new BlockChainExplorer("xmrchain.net", "https://xmrchain.net/tx/")
+            new BlockChainExplorer("moneroexplorer.com", "https://moneroexplorer.com/tx?id=")
     ));
     private static final ArrayList<BlockChainExplorer> XMR_STAGE_NET_EXPLORERS = new ArrayList<>(Arrays.asList(
             new BlockChainExplorer("stagenet.xmrchain.net", "https://stagenet.xmrchain.net/tx/")
@@ -87,7 +87,6 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
 
     private static final ArrayList<String> XMR_TX_PROOF_SERVICES_CLEAR_NET = new ArrayList<>(Arrays.asList(
             "xmrblocks.monero.emzy.de", // @emzy
-            //"explorer.monero.wiz.biz", // @wiz
             "xmrblocks.bisq.services" // @devinbileck
     ));
     private static final ArrayList<String> XMR_TX_PROOF_SERVICES = new ArrayList<>(Arrays.asList(

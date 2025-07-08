@@ -5,10 +5,15 @@ name: CI
 
 on:
   workflow_dispatch:
-  push:
   pull_request:
     paths-ignore:
       - '**/README.md'
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -163,7 +168,3 @@ jobs:
             ${{ github.workspace }}/haveno-v${{ env.VERSION }}-macos-SNAPSHOT-all.jar.SHA-256
             ${{ github.workspace }}/release-windows/haveno-v${{ env.VERSION }}-windows-installer.exe
             ${{ github.workspace }}/haveno-v${{ env.VERSION }}-windows-SNAPSHOT-all.jar.SHA-256
-
-# https://git-scm.com/docs/git-tag      - git-tag Docu
-#
-# git tag                   - lists all local tags
