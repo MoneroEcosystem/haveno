@@ -64,19 +64,6 @@ jobs:
           ./gradlew packageInstallers
         working-directory: .
 
-      # get version from jar
-      - name: Set Version Unix
-        if: ${{ matrix.os == 'ubuntu-22.04' || matrix.os == 'macos-13' }}
-        run: |
-          export VERSION=$(ls desktop/build/temp-*/binaries/desktop-*.jar.SHA-256 | grep -Eo 'desktop-[0-9]+\.[0-9]+\.[0-9]+' | sed 's/desktop-//')
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-      - name: Set Version Windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          $VERSION = (Get-ChildItem -Path desktop\build\temp-*/binaries\desktop-*.jar.SHA-256).Name -replace 'desktop-', '' -replace '-.*', ''
-          "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
-        shell: powershell
-
       - name: Move Release Files for Linux
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
