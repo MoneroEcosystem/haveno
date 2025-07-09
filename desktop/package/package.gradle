@@ -277,7 +277,7 @@ task packageInstallers {
                         " --java-options --add-opens=java.base/java.lang.reflect=ALL-UNNAMED" +
                         " --java-options --add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED" +
                         " --java-options -Djava.net.preferIPv4Stack=true" +
-                        " --arguments --baseCurrencyNetwork=XMR_STAGENET"
+                        " --arguments --baseCurrencyNetwork=XMR_MAINNET"
                 // Warning: this will cause guice reflection exceptions and lead to issues with the guice internal cache
                 // resulting in the UI not loading
 //              " --java-options -Djdk.module.illegalAccess=deny" +
@@ -320,7 +320,7 @@ task packageInstallers {
 
             // Package deb
             executeCmd(jPackageFilePath + commonOpts + linuxOpts +
-                    " --linux-deb-maintainer noreply@haveno.exchange" +
+                    " --linux-deb-maintainer david.potter@gmail.com" +
                     " --type deb")
 
             // Clean jpackage temp folder, needs to be empty for the next packaging step (AppImage)
