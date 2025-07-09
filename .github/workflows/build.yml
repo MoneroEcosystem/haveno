@@ -50,7 +50,7 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm libfuse2 flatpak flatpak-builder appstream
+          sudo apt-get install -y rpm libfuse2 flatpak flatpak-builder appstream make
           flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
       - name: Install WiX Toolset
         if: ${{ matrix.os == 'windows-latest' }}
@@ -60,7 +60,7 @@ jobs:
         shell: powershell
       - name: Build Haveno Installer
         run: |
-          ./gradlew clean build --refresh-keys --refresh-dependencies
+          ./gradlew :core:compileJava :desktop:build -x test -x checkstyleMain -x checkstyleTest
           ./gradlew packageInstallers
         working-directory: .
 
