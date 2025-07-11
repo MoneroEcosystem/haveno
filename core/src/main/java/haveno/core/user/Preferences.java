@@ -159,7 +159,7 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
         });
 
         cssThemeProperty.addListener((ov) -> {
-            prefPayload.setCssTheme(cssThemeProperty.get());
+            prefPayload.setCssTheme(1);
             requestPersistence();
         });
 
@@ -366,7 +366,7 @@ public final class Preferences implements PersistedDataHost, BridgeAddressProvid
     }
 
     public void setCssTheme(boolean useDarkMode) {
-        this.cssThemeProperty.set(useDarkMode ? 1 : 0);
+        this.cssThemeProperty.set(1);
     }
 
     public void addTraditionalCurrency(TraditionalCurrency tradeCurrency) {

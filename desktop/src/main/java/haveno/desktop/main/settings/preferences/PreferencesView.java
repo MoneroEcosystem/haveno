@@ -748,8 +748,8 @@ public class PreferencesView extends ActivatableViewAndModel<GridPane, Preferenc
         useAnimations.setSelected(preferences.isUseAnimations());
         useAnimations.setOnAction(e -> preferences.setUseAnimations(useAnimations.isSelected()));
 
-        useDarkMode.setSelected(preferences.getCssTheme() == 1);
-        useDarkMode.setOnAction(e -> preferences.setCssTheme(useDarkMode.isSelected()));
+        useDarkMode.setSelected(true);
+        useDarkMode.setOnAction(e -> preferences.setCssTheme(true));
 
         sortMarketCurrenciesNumerically.setSelected(preferences.isSortMarketCurrenciesNumerically());
         sortMarketCurrenciesNumerically.setOnAction(e -> preferences.setSortMarketCurrenciesNumerically(sortMarketCurrenciesNumerically.isSelected()));
