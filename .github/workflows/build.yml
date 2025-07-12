@@ -31,9 +31,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'adopt'
-          cache: gradle
-      - name: Build with Gradle
-        run: ./gradlew build --stacktrace --scan
+          cache: ''
+      - name: Clean and Build (no cache)
+        run: |
+          ./gradlew clean build --no-build-cache --no-configuration-cache --stacktrace --scan
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
