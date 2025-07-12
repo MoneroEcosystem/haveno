@@ -432,7 +432,7 @@ public class Config {
                 parser.accepts(MAX_CONNECTIONS, "Max. connections a peer will try to keep")
                         .withRequiredArg()
                         .ofType(int.class)
-                        .defaultsTo(12);
+                        .defaultsTo(15);
 
         ArgumentAcceptingOptionSpec<String> socks5ProxyXmrAddressOpt =
                 parser.accepts(SOCKS_5_PROXY_XMR_ADDRESS, "A proxy address to be used for Bitcoin network.")

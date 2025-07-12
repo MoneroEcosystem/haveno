@@ -23,27 +23,13 @@ public class CssTheme {
     public static final int CSS_THEME_LIGHT = 0;
     public static final int CSS_THEME_DARK = 1;
 
-    private static int currentCSSTheme;
+    private static int currentCSSTheme = 1;
     private static boolean useDevHeader;
 
     public static void loadSceneStyles(Scene scene, int cssTheme, boolean devHeader) {
         String cssThemeFolder = "/haveno/desktop/";
-        String cssThemeFile = "";
+        String cssThemeFile = "theme-dark.css";
 
-        currentCSSTheme = cssTheme;
-        useDevHeader = devHeader;
-
-        switch (cssTheme) {
-
-            case CSS_THEME_DARK:
-                cssThemeFile = "theme-dark.css";
-                break;
-
-            case CSS_THEME_LIGHT:
-            default:
-                cssThemeFile = "theme-light.css";
-                break;
-        }
 
         scene.getStylesheets().setAll(
                 // load base styles first
@@ -63,7 +49,7 @@ public class CssTheme {
     }
 
     public static boolean isDarkTheme() {
-        return currentCSSTheme == CSS_THEME_DARK;
+        return true;
     }
 
 }

@@ -39,13 +39,13 @@ jobs:
         with:
           name: error-reports-${{ matrix.os }}
           path: ${{ github.workspace }}/desktop/build/reports
-      - name: cache nodes dependencies
-        uses: actions/upload-artifact@v4
-        with:
-          include-hidden-files: true
-          name: cached-localnet
-          path: .localnet
-          overwrite: true
+#      - name: cache nodes dependencies
+#        uses: actions/upload-artifact@v4
+#        with:
+#          include-hidden-files: true
+#          name: cached-localnet
+#          path: .localnet
+#          overwrite: true
       - name: Install dependencies
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
